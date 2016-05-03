@@ -3,9 +3,12 @@ package services;
 import org.ldaptive.*;
 import org.ldaptive.auth.*;
 import org.ldaptive.control.ResponseControl;
+import play.api.Configuration;
 import play.api.Play;
 import play.libs.F;
+import scala.Option;
 
+import javax.inject.Inject;
 import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
 import javax.naming.Context;
@@ -21,9 +24,15 @@ import java.util.concurrent.Future;
  */
 public class ActiveDirectoryService {
 
-    public static final String ldapURL = "ldap://127.0.0.1:389";
-    public static final String domainName =   "dc=localhost,dc=com";
+    public static final String ldapURL = "ldap://127.0.0.1:1234";
+    public static final String domainName =   "dc=example,dc=com";
     public static final int timeout = 1;
+    private final String ldapServer;
+
+    @Inject
+    public ActiveDirectoryService(Configuration configuration){
+        ldapServer = configuration.getString("ldapServer", Option.empty()).get();
+    }
 //
 //    public static final String ldapURL = Play._currentApp().configuration().getString("ActiveDirectory.url", null).get();
 //    public static final String domainName =   Play._currentApp().configuration().getString("ActoveDirectory.DomainName", null).get();
@@ -45,7 +54,9 @@ public class ActiveDirectoryService {
     }
 
     public Boolean authenticateLdap(String username, String password) throws LdapException {
-        ConnectionConfig connConfig = new ConnectionConfig(ldapURL);
+//        play.Play.application.configuration.getString("foo");
+
+        ConnectionConfig connConfig = new ConnectionConfig(ldapServer);
 //        connConfig.setUseStartTLS(true);
 //        connConfig.setConnectionInitializer(
 //                new BindConnectionInitializer("cn=Manager,dc=localhost,dc=com", new Credential("pass1234")));

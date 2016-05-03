@@ -33,7 +33,7 @@ public class HomeController extends Controller {
     @Transactional
     public Result welcome() {
         String username = session().get("username");
-        return ok(welcome.render("Welcome", personService.getPerson(username)));
+        return ok(welcome.render("Welcome", new Person()));
     }
 
 
